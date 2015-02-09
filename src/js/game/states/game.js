@@ -11,12 +11,13 @@
             this.game.renderer.roundPixels = true;
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
             this.game.world.setBounds(0, 0, 1920, 1324);            
-           
-            console.log(this.game);
             
             // Game functions
             this.setupBackground();
             this.setupPlayer();
+            //this.setupBitmapTrail();
+            this.setupTrail();
+            
             this.setupEnemies();
             this.setupBullets();
             this.setupExplosions();
@@ -42,6 +43,7 @@
             // when the example begins running.
             this.game.input.activePointer.x = this.game.width/2;
             this.game.input.activePointer.y = this.game.height/2;
+            
         },
         
         update: function () {
@@ -50,10 +52,12 @@
             //this.enemyFire();
             this.processPlayerInput();
             this.processDelayedEffects();
+            //this.renderBitmapTrail();
+            
+            // These functions below are not needed/implemented, but do not delete
             //this.scrollBackground();
-
-            //this.screenWrap(this.player);
-            //this.bulletPool.forEachExists(this.screenWrap, this);
+            /*this.screenWrap(this.player);
+            this.bulletPool.forEachExists(this.screenWrap, this);*/
         },
         
         render: function () {
@@ -71,8 +75,8 @@
         
         // create()- related functions
         setupBackground: function () {
-            this.background = this.game.add.sprite(0, 0, 'milkyway');
-            //this.background = this.game.add.tileSprite(0, 0, 1920, 1324, 'milkyway');
+            //this.background = this.game.add.sprite(0, 0, 'milkyway');
+            this.background = this.game.add.tileSprite(0, 0, 1920, 1324, 'milkyway');
         },
         
         setupPlayer: function () {
@@ -88,10 +92,6 @@
             this.player.body.setSize(25, 25, 0, 0);
             this.player.body.collideWorldBounds = true;
             
-            //this.player.animations.add('fly', [0, 1, 2], 20, true);
-            //this.player.animations.add('ghost', [3, 0, 3, 1], 20, true);
-            //this.player.play('fly');
-            
             // Player Properties
             this.weaponLevel = 0;
             //this.player.speed = 300;
@@ -100,6 +100,36 @@
             this.maxSpeed = 400;
             // Have the camera follow player ship
             this.game.camera.follow(this.player);
+        },
+        
+        setupTrail: function() {
+            //create an emitter
+            this.emitter = this.game.add.emitter(0, 0, 50);
+            this.emitter.makeParticles('jets');
+            this.emitter.gravity = 0;
+            // Attach the emitter to the sprite
+            this.player.addChild(this.emitter);
+            //position the emitter relative to the sprite's anchor location
+            this.emitter.y = 0;
+            this.emitter.x = -16;
+
+            var px = this.player.body.velocity.x * 10;
+            var py = this.player.body.velocity.y * 10;
+
+            px *= -1;
+            py *= -1;
+            
+            // setup options for the emitter
+            this.emitter.lifespan = 500;
+            this.emitter.maxParticleSpeed = new Phaser.Point(-100,50);
+            this.emitter.minParticleSpeed = new Phaser.Point(-200,-50);
+            
+        },
+        
+        setupBitmapTrail: function(){
+            this.bmd = this.game.add.bitmapData(1920, 1324);
+            this.bmd.context.fillStyle = '#ffffff';
+            var bg = this.game.add.sprite(0, 0, this.bmd);  
         },
         
         setupEnemies: function () {
@@ -346,11 +376,10 @@
             
             // Up and Down movement
             if (this.cursors.up.isDown || this.input.keyboard.isDown(Phaser.Keyboard.W)) {
-                //this.background.tilePosition.y += 1;
                 this.game.physics.arcade.accelerationFromRotation(this.player.rotation, 200, this.player.body.acceleration);
+                this.renderTrail();
             }
             else if (this.cursors.down.isDown || this.input.keyboard.isDown(Phaser.Keyboard.S)) {
-                //this.background.tilePosition.y += -1;
                 this.game.physics.arcade.accelerationFromRotation(this.player.rotation, -100, this.player.body.acceleration);
             }else{
                 this.player.body.acceleration.set(0);
@@ -401,6 +430,17 @@
                 this.boss.body.bounce.x = 1;
                 this.boss.body.collideWorldBounds = true;
             }
+        },
+        
+        renderTrail: function() {
+            // emit a single particle every frame that the mouse is down
+            this.emitter.emitParticle();  
+            //this.emitter.start(true, 1000, 8);
+        },
+        
+        renderBitmapTrail: function(){
+            this.bmd.context.fillRect(this.player.x, this.player.y, 1, 1);
+            this.bmd.dirty = true;
         },
         
         enemyHit: function (bullet, enemy) {
@@ -600,6 +640,7 @@
         },
         
         scrollBackground: function() {
+            // This function is needed for the a TileMap
             // Scroll background image as player moves
             if (!this.game.camera.atLimit.x)
             {
