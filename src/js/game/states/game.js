@@ -81,7 +81,7 @@
             
             //  and its physics settings
             this.physics.enable(this.player, Phaser.Physics.ARCADE);
-            this.player.body.drag.set(100);
+            this.player.body.drag.set(50);
             this.player.body.maxVelocity.set(200);
             
             // 25 x 25 pixel hitbox, centered
@@ -230,7 +230,7 @@
             // calculate location of first life icon
             var firstLifeIconX = this.game.width - 10 - (3 * 30);
             for (var i = 0; i < 3; i++) {
-                var life = this.lives.create(firstLifeIconX + (30 * i), 30, 'player');
+                var life = this.lives.create(firstLifeIconX + (30 * i), 30, 'frigate_01');
                 life.scale.setTo(0.5, 0.5);
                 life.anchor.setTo(0.5, 0.5);
             }
