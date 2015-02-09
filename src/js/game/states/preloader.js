@@ -27,7 +27,7 @@
 
             //  Here we load the rest of the assets our game needs.
             this.load.image('titlepage', 'images/titlepage.png#grunt-cache-bust');
-            this.load.image('milkyway', 'images/MilkyWay.jpg#grunt-cache-bust');
+            this.load.image('milkyway', 'images/MilkyWay_Large.jpg#grunt-cache-bust');
             this.load.image('stars', 'images/starfield.jpg#grunt-cache-bust');
             this.load.image('bullet', 'images/bullet.png#grunt-cache-bust');
             this.load.image('enemyBullet', 'images/enemy-bullet.png#grunt-cache-bust');

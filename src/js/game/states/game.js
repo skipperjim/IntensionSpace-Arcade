@@ -10,7 +10,7 @@
             this.game.renderer.clearBeforeRender = false;
             this.game.renderer.roundPixels = true;
             this.game.physics.startSystem(Phaser.Physics.ARCADE);
-            this.game.world.setBounds(0, 0, 1920, 1200);            
+            this.game.world.setBounds(0, 0, 1920, 1324);            
            
             console.log(this.game);
             
@@ -71,8 +71,8 @@
         
         // create()- related functions
         setupBackground: function () {
-            this.background = this.game.add.tileSprite(0, 0, 800, 600, 'milkyway');
-            this.background.fixedToCamera = true;
+            this.background = this.game.add.sprite(0, 0, 'milkyway');
+            //this.background = this.game.add.tileSprite(0, 0, 1920, 1324, 'milkyway');
         },
         
         setupPlayer: function () {
